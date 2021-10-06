@@ -1,7 +1,7 @@
 package com.tiagoperroni.main.services;
 
 import com.tiagoperroni.main.entity.Product;
-
+import com.tiagoperroni.main.exceptionhandler.ProductNotFoundException;
 import com.tiagoperroni.main.repository.ProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ProductService {
 
     public Product findById(Long id) {
         Optional<Product> product = productRepository.findById(id);
-        return product.orElseThrow(null);
+        return product.orElseThrow(() -> new ProductNotFoundException());
     }
 
     public Product updateProducts(Product product, Long id) {
@@ -41,13 +41,14 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         findById(id);
-       productRepository.deleteById(id);
+        productRepository.deleteById(id);
     }
 
     public Product validCreate(Product product) {
-        if(product.getName() == null ||product.getCategory() == null
-                || product.getCostPrice() == null || product.getSalePrice() == null) {
-            //throw new ValidationExceptionHandler("Todos os campos devem ser preenchidos");
+        if (product.getName() == null || product.getCategory() == null || product.getCostPrice() == null
+                || product.getSalePrice() == null) {
+            // throw new ValidationExceptionHandler("Todos os campos devem ser
+            // preenchidos");
         }
         return product;
     }
