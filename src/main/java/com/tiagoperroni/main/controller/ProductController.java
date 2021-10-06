@@ -1,10 +1,10 @@
 package com.tiagoperroni.main.controller;
 
 import com.tiagoperroni.main.entity.Product;
+
 import com.tiagoperroni.main.services.ProductService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class ProductController {
 
     @ApiOperation(value = "Create Product")
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws Exception {
         Product newProduct = productsService.createProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
@@ -31,6 +31,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<Product>> listAllProducts() {
         return new ResponseEntity<>(productsService.listAllProducts(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Product> findById(@PathVariable Long id) {
+        return new ResponseEntity<>(productsService.findById(id), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Update Product")
@@ -43,6 +48,6 @@ public class ProductController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productsService.deleteProduct(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
