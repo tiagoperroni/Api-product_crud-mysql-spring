@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +18,8 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public Product createProduct(Product product) {
-        validCreate(product);
+    public Product createProduct(Product product) { 
+        product.setDataCadastro(LocalDateTime.now());    
         return productRepository.save(product);
     }
 
@@ -33,8 +34,7 @@ public class ProductService {
 
     public Product updateProducts(Product product, Long id) {
         findById(id);
-        Product updateProduct = productRepository.getById(id);
-        System.out.println(updateProduct);
+        Product updateProduct = productRepository.getById(id);     
         BeanUtils.copyProperties(product, updateProduct, "id");
         return productRepository.save(updateProduct);
     }
@@ -42,14 +42,5 @@ public class ProductService {
     public void deleteProduct(Long id) {
         findById(id);
         productRepository.deleteById(id);
-    }
-
-    public Product validCreate(Product product) {
-        if (product.getName() == null || product.getCategory() == null || product.getCostPrice() == null
-                || product.getSalePrice() == null) {
-            // throw new ValidationExceptionHandler("Todos os campos devem ser
-            // preenchidos");
-        }
-        return product;
-    }
+    }  
 }

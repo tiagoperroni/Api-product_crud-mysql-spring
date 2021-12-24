@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import javax.validation.Valid;
-
 @Api(tags = "Products")
 @RestController
 @RequestMapping(value = "/products")
+@CrossOrigin("*")
 public class ProductController {
 
     @Autowired
@@ -24,7 +23,7 @@ public class ProductController {
 
     @ApiOperation(value = "Create Product")
     @PostMapping
-    public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws Exception {
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) throws Exception {
         Product newProduct = productsService.createProduct(product);
         return new ResponseEntity<>(newProduct, HttpStatus.CREATED);
     }
@@ -43,9 +42,8 @@ public class ProductController {
     @ApiOperation(value = "Update Product")
     @PutMapping("/{id}")
     public ResponseEntity<Product> updateProduct(@RequestBody Product product, @PathVariable Long id) {
-        return new ResponseEntity<>(productsService.updateProducts(product, id), HttpStatus.OK);
+        return new ResponseEntity<>(productsService.updateProducts(product, id), HttpStatus.ACCEPTED);
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {

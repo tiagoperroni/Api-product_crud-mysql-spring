@@ -1,0 +1,49 @@
+version: '3.8'
+services:
+  dbproducts:
+    image: mysql:latest  
+    volumes:
+      - db-products:/var/lib/mysql
+    hostname: ${DB_HOST}
+    networks:
+      - products-compose-network
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE} 
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    networks:
+      - products-compose-network
+    links:
+      - dbproducts
+    ports:
+      - 8000:80
+
+  products_api:
+    build:
+      context: . 
+      dockerfile: Dockerfile
+    image: api-products-image:0.1
+    hostname: apiproduct
+    links:
+      - dbproducts
+    environment:
+      DATABASE_HOST: ${DB_HOST}
+      DB_PASS: ${DB_PASSWORD}
+    networks:
+      - products-compose-network
+    depends_on:
+      - dbproducts
+    ports:
+      - 8080:8080
+
+volumes:
+  db-products:
+
+networks:
+  products-compose-network:
+    driver: bridge
